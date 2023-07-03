@@ -9,6 +9,8 @@ const User=require('../models/user')
 
 const JWT_KEY="secret"
 
+
+//user/signup creare email+parola
 router.post('/signup', (req, res, next) => {
     User.find({email:req.body.email})
     .exec()
@@ -51,6 +53,7 @@ router.post('/signup', (req, res, next) => {
    
 });
 
+//user delete dupa id generat de mongoose
 router.delete('/:userId', (req, res, next) => {
     const id = req.params.userId;
     User.findByIdAndRemove(id)
@@ -74,6 +77,7 @@ router.delete('/:userId', (req, res, next) => {
         });
 });
 
+//user login cu datele deja initializare in baza de date
 router.post("/login", (req, res, next) => {
     User.find({ email: req.body.email })
       .exec()
@@ -118,6 +122,7 @@ router.post("/login", (req, res, next) => {
       });
   });
 
+  //get all users(pentru teste folosita)
 router.get('/',(req,res,next)=>{
     User.find()
     .exec()
