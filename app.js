@@ -6,7 +6,9 @@ const mongoose=require('mongoose')
 //routes
 const productRoutes=require('./api/routes/products');
 const orderRoutes=require('./api/routes/orders');
+const userRoutes=require('./api/routes/user')
 const bodyParser=require('body-parser');
+
 
 
 mongoose.connect("mongodb+srv://winkode12:admin1234@cluster0.9agbae5.mongodb.net/?retryWrites=true&w=majority"
@@ -14,6 +16,7 @@ mongoose.connect("mongodb+srv://winkode12:admin1234@cluster0.9agbae5.mongodb.net
 
 
 app.use(morgan('dev'));
+app.use('/uploads',express.static('uploads'))
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json());
 //prevent corse error
@@ -28,6 +31,7 @@ app.use((req,res,next)=>{
 })
 app.use('/products',productRoutes);
 app.use('/orders',orderRoutes);
+app.use('/user',userRoutes)
 
 
 

@@ -28,6 +28,7 @@ const upload=multer({
 
 const Product=require("../models/product")
 
+
 router.get('/',(req,res,next)=>{
  Product.find()
  .select('name price _id tags description productImage')
@@ -80,6 +81,9 @@ router.post('/',upload.single('productImage'),(req,res,next)=>{
             name: result.name,
             price: result.price,
             _id: result._id,
+            tags:result.tags,
+            description:result.description,
+            productImage:result.productImage,
             request: {
                 type: 'GET',
                 url: "http://localhost:3000/products/" + result._id
