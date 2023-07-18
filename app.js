@@ -10,7 +10,7 @@ const userRoutes=require('./api/routes/user')
 const bodyParser=require('body-parser');
 
 
-
+//link to mongodb cluster
 mongoose.connect("mongodb+srv://winkode12:admin1234@cluster0.9agbae5.mongodb.net/?retryWrites=true&w=majority"
   )
 

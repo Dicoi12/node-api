@@ -5,6 +5,8 @@ const mongoose=require('mongoose')
 const Order=require('../models/order')
 const Product=require('../models/product')
 
+
+//get all orders
 router.get('/', (req, res, next) => {
     Order.find()
         .select('product quantity _id')
@@ -33,7 +35,7 @@ router.get('/', (req, res, next) => {
         });
 })
 
-
+//post pentru o comanda
 router.post('/', (req, res, next) => {
     Product.findById(req.body.productId)
         .then(product => {
@@ -71,6 +73,8 @@ router.post('/', (req, res, next) => {
         });
 });
 
+
+//get pentru o anumita comanda dupa id mongoose
     router.get('/:orderId',(req,res,next)=>{
         Order.findById(req.params.orderId)
         .populate('product')
@@ -96,6 +100,7 @@ router.post('/', (req, res, next) => {
         })
     })
 
+    //
 router.post('/:orderId',(req,res,next)=>{
     const order={
         productId:req.body.productId,
@@ -108,6 +113,8 @@ router.post('/:orderId',(req,res,next)=>{
        
     })
 })
+
+//stergem comanda dupa id
     router.delete('/:orderId',(req,res,next)=>{
         const id=req.params.orderId;
         Order.findByIdAndRemove(id)

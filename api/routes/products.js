@@ -29,7 +29,7 @@ const upload=multer({
 
 const Product=require("../models/product")
 
-
+//getall products
 router.get('/',(req,res,next)=>{
  Product.find()
  .select('name price _id tags description productImage')
@@ -62,6 +62,8 @@ router.get('/',(req,res,next)=>{
         });
       });
   });
+
+  //adauga produs form type
 router.post('/',upload.single('productImage'),checkAuth,(req,res,next)=>{
     
     const product=new Product({
@@ -100,7 +102,7 @@ router.post('/',upload.single('productImage'),checkAuth,(req,res,next)=>{
     });
 });
 
-
+//returneaza un singur produs dupa id
 router.get("/:productId", (req, res, next) => {
     const id = req.params.productId;
     Product.findById(id)
@@ -128,7 +130,7 @@ router.get("/:productId", (req, res, next) => {
       });
   });
 
-
+//modifica elementele unui produs
 router.patch('/:productId',(req,res,next)=>{
     const id=req.params.productId;
 
@@ -137,7 +139,7 @@ router.patch('/:productId',(req,res,next)=>{
     .catch(err => res.status(500).json({ error: err}))
 })
    
-
+//sterge produsul dupa id
 router.delete('/:productId',(req,res,next)=>{
     const id=req.params.productId;
     Product.findByIdAndRemove(id)
@@ -150,4 +152,5 @@ router.delete('/:productId',(req,res,next)=>{
         res.status(500).json({error:err})
     })
  })
+ 
 module.exports = router;
