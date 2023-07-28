@@ -1,78 +1,53 @@
 const express=require('express');
 const router=express.Router();
 const mongoose=require('mongoose')
-const multer=require('multer')
 const checkAuth=require('../middleware/check-auth')
 
-const storage=multer.diskStorage({
-    destination:function(req,file,cb){
-cb(null,'./uploads/')
-    },
-    filename:function(req,file,cb){
-        cb(null, Date.now() + file.originalname)
-    }
-})
 
-const fileFilter=(req,file,cb)=>{
-    if(file.mimetype==='image/png'||file.mimetype==='image/jpeg'){
-    cb(null,true)}
-    else{
-    cb(null,false)}
-}
-const upload=multer({
-    storage:storage,limits:{
-    filesize:1024*1024*5
-},fileFilter:fileFilter
-}
-)
 
 
 const Product=require("../models/product")
 
 //getall products
-router.get('/',(req,res,next)=>{
- Product.find()
- .select('name price _id tags description productImage')
- .exec()
- .then(docs=>{
-    const response={
-        count:docs.length,
-        products:docs.map(doc=>{
-            return{
-                name:doc.name,
-                price:doc.price,
-                tags:doc.tags,
-                description:doc.description,
-                productIamge:doc.productImage,
-                _id:doc._id,
-                request:{
-                    type:'GET',
-                    url:'http://localhost:3000/products/'+doc._id
-                }
-            }
-        })
-    }
-        res.status(200).json(response);
-       
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
-        });
+// get all products
+router.get('/', (req, res, next) => {
+  Product.find()
+    .exec()
+    .then(docs => {
+      const products = docs.map(doc => ({
+        _id: doc._id,
+        name: doc.name,
+        price: doc.price,
+        tags: doc.tags,
+        cookTime: doc.cookTime,
+        imageUrl: doc.imageUrl,
+        quantity: doc.quantity
+      }));
+      
+      res.status(200).json(products);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
       });
-  });
+    });
+});
+
 
   //adauga produs form type
-router.post('/',upload.single('productImage'),checkAuth,(req,res,next)=>{
+router.post('/',(req,res,next)=>{
     
     const product=new Product({
         _id:new mongoose.Types.ObjectId(),
         name:req.body.name,
-        price:req.body.number,
+        price:req.body.price,
+        cookTime:req.body.cookTime,
+
         tags:req.body.tags,
-        description:req.body.description,
-        productImage:req.file.path
+        imageUrl:req.body.imageUrl,
+        quantity:req.body.quantity
+
     })
     product
     .save()
@@ -85,12 +60,11 @@ router.post('/',upload.single('productImage'),checkAuth,(req,res,next)=>{
             price: result.price,
             _id: result._id,
             tags:result.tags,
-            description:result.description,
-            productImage:result.productImage,
-            request: {
-                type: 'GET',
-                url: "http://localhost:3000/products/" + result._id
-            }
+            cookTime:result.cookTime,
+
+            imageUrl:result.imageUrl,
+            quantity:result.quantity
+            
         }
       });
     })
@@ -113,10 +87,7 @@ router.get("/:productId", (req, res, next) => {
         if (doc) {
           res.status(200).json({
               product: doc,
-              request: {
-                  type: 'GET',
-                  url: 'http://localhost:3000/products'
-              }
+            
           });
         } else {
           res
